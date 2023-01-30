@@ -7,7 +7,7 @@
 Consider, a Java application, comprise of several microservices and modules, and in the heart of the application, there is a Message Broker. This article talks about how you can organize this backend code and be tied together with a common pipeline, with clean release and branching strategies.
 
 
->put an architecture diagram here
+> TODO: put an architecture diagram here
 
 
 ### Pipeline
@@ -110,6 +110,7 @@ One of the other things we struggled with initially was managing configuration, 
 
 
 We divided the problem in hand into pieces and separated functional, technical, and environment specific configs.
+
 We choose to move most of the functional specs to internal APIs on top of MongoDB and Postgres, keeping the option open for functional administrators to manage these via CRUD options. I must say, we were lucky on this aspect since these properties didn’t contribute to bean creation and fortunately, we didn’t need to restart the application(s) for these.
 
 
@@ -137,7 +138,7 @@ For the second problem on env-specific props, Spring Boot already has an answer,
 But, we kept our applications separated from this, the means no profile has been set during the deployment of the applications, they all contact the config-server at startup and read the properties config-server gives back. We made our config-server to deployed with the profile, so for env A it gets deployment with properties <application>-A.yml/properties and exposes properties related to that profile. This way we centralized the properties and managed the env-related stuff.
 
 
->picture of profile based config-server
+> TODO: picture of profile based config-server
 
 
 ### APIs
@@ -147,7 +148,7 @@ An application nowadays always has one or more REST endpoints, it is one of the 
 We used OpenAPI standards, created API definitions in YAML, and generated code out of it, for server-side as well as clients. This minimized our code a lot and less code mean less maintenance.
 
 
->open api to server side and client code
+> TODO: open api to server side and client interaction diagram
 
 
 Snippet of maven plugin to generate server-side code
@@ -268,7 +269,7 @@ public class UserApiBean {
 Soon we ran into an issue of “how to effectively share the API definitions”. The option we considered was, creating the definition in a separate repository, and sharing it with server as well as clients using “git submodules”. If you are not familiar with submodules, this is a very effective way to share static files between git repositories.
 
 
-> git submodule pic
+>  TODO: git submodule pic
 
 
 But we choose a different path. We decided to keep the API definitions in the repository where we coded the server. So, any change in the definition is followed by an update in the server-side code and a release to Nexus as a part of our build-release pipeline.
@@ -316,14 +317,14 @@ Special thanks here for the contribution, to [Tijn van den Bergh](https://www.li
 Automated tests are an integral part of validating that the code we are releasing is not breaking any other downstream modules. But setting this up properly is always quite challenging. We used Gherkin to write the tests and Cucumber with Spring to run and generate reports. To complete the cycle, we also posted the results into our internal Confluence to keep our stakeholders informed about the details of each test and their results (passed or failed).
 
 
-> diagram of automated test
+>  TODO: diagram of automated test
 
 
 System integration tests are costly, meaning, it requires time to debug and fix any failing test. So, it is very important that you keep the number of tests here as minimal as possible and only “happy flow” and “crucial business flow” scenarios. All the rest of the scenarios should be captured via Unit tests in each module.
 We designed a separate pipeline for this, where we make use of a Spring profile-based run coupled with the branch the tests are running.
 
 
-> diagram of test pipeline
+>  TODO:  diagram of test pipeline
 
 
 Special Thanks here for the contribution to [Robert Swier](https://www.linkedin.com/in/robert-swier-a09851b/)
@@ -332,10 +333,17 @@ Special Thanks here for the contribution to [Robert Swier](https://www.linkedin.
 ### Additional Useful Content
 
 
+>  TODO:
+
 
 #### Kafka Schema Definition
 
 
+>  TODO:
+
+
 #### Renovate Bot to Automate Dependency Updates
- 
+
+
+>  TODO: 
 
