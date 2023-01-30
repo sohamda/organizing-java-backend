@@ -1,0 +1,57 @@
+include: jobs/maven-settings.yml
+
+# Setup
+.setup-maven:
+  image: ${MAVEN_IMAGE}
+  script:
+    - if test -f "ci-settings.xml";
+      then echo "ci-settings.xml exist, using ci-settings";
+      else echo "$MAVEN_SETTINGS" >"ci-settings.xml";
+      fi
+    - echo "Retrieving settings from CI_SETTINGS variable"
+
+# Compile
+.compile-maven:
+  image: ${MAVEN_IMAGE}
+  script:
+    - mvn $MAVEN_CLI_OPTS clean install -U -DskipTests
+    - mvn $MAVEN_CLI_OPTS test-compile -DskipTests
+
+# Test
+.test-maven:
+  image: ${MAVEN_IMAGE}
+  script:
+    - mvn $MAVEN_CLI_OPTS verify surefire-report:report
+
+# Sonar
+.sonar-maven:
+  image: ${MAVEN_IMAGE}
+  before_script:
+    - ''
+  script:
+    - mvn $MAVEN_CLI_OPTS sonar:sonar -Dsonar.coverage.jacoco.xmlReportPaths="./target/site/jacoco/jacoco.xml" -Dsonar.host.url="${SONAR_URL}" -Dsonar.login="${SONAR_KEY}" -Dsonar.coverage.exclusions="${SONAR_COVERAGE_EXCLUSIONS}" -Dsonar.qualitygate.wait=true
+
+# Quality Assessment
+.mutation-test-maven:
+  image: ${MAVEN_IMAGE}
+  script:
+    - mvn $MAVEN_CLI_OPTS pitest:mutationCoverage
+
+.dependency-check-maven:
+  image: ${MAVEN_IMAGE}
+  script:
+    - git submodule sync
+    - git submodule update --init --recursive --remote
+    - mvn $MAVEN_CLI_OPTS dependency-check:check
+
+# Package
+.package_maven:
+  image: ${MAVEN_IMAGE}
+  script:
+    - mvn $MAVEN_CLI_OPTS package -DskipTests
+
+# Deploy
+.deploy-nexus-maven:
+  image: ${MAVEN_IMAGE}
+  script:
+    - mvn $MAVEN_CLI_OPTS deploy -DskipTests
