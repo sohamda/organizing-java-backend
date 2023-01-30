@@ -349,17 +349,17 @@ Special thanks here for the contribution, to [Tijn van den Bergh](https://www.li
 ### Automated System Integration Tests and Reports
 
 
-Automated tests are an integral part of validating that the code we are releasing is not breaking any other downstream modules. But setting this up properly is always quite challenging. We used Gherkin to write the tests and Cucumber with Spring to run and generate reports. To complete the cycle, we also posted the results into our internal Confluence to keep our stakeholders informed about the details of each test and their results (passed or failed).
+Integration tests are an integral part of validating that the code we are releasing is not breaking any other downstream modules. But setting this up properly is always quite challenging. We used Gherkin to write the tests and Cucumber with Spring to run and generate reports. To complete the cycle, we also posted the results into our internal Confluence to keep our stakeholders informed about the details of each test and their results (passed or failed).
 
 
->  TODO: diagram of automated test
+![Alt text](images/automated-test.png "integrated tests with Gherkin/Cucumber")
 
 
-System integration tests are costly, meaning, it requires time to debug and fix any failing test. So, it is very important that you keep the number of tests here as minimal as possible and only “happy flow” and “crucial business flow” scenarios. All the rest of the scenarios should be captured via Unit tests in each module.
+Integration tests are costly, meaning, it requires time to debug and fix any failing test. So, it is very important that you keep the number of tests here as minimal as possible and only “happy flow” and “crucial business flow” scenarios. All the rest of the scenarios should be captured via Unit tests in each module.
 We designed a separate pipeline for this, where we make use of a Spring profile-based run coupled with the branch the tests are running.
 
 
->  TODO:  diagram of test pipeline
+![Alt text](images/pipeline-automated-test.png "automated test pipeline")
 
 
 Special Thanks here for the contribution to [Robert Swier](https://www.linkedin.com/in/robert-swier-a09851b/)
