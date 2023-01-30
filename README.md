@@ -5,11 +5,12 @@
 2. [Pipeline](#pipeline)
     1. [Parent POM](#parent-pom)
     2. [Quality-Control on Merge](#quality-control-on-merge)
-    3. [Branching strategy and automatic versioning](#branching-strategy-and-automatic-versioning)
+    3. [OWASP check - exclusion list](#owasp-check---exclusion-list)
+    4. [Branching strategy and automatic versioning](#branching-strategy-and-automatic-versioning)
 3. [Configuration Management](#configuration-management)
 4. [APIs - generation & sharing/consumption](#apis---generation--sharingconsumption)
 5. [Automated System Integration Tests and Reports](#automated-system-integration-tests-and-reports)
-6. [Additional Useful Content](#additional-useful-content)
+6. [Additional Content](#additional-content)
     1. [Kafka Schema Definition](#kafka-schema-definition)
     2. [Renovate Bot to Automate Dependency Updates](#renovate-bot-to-automate-dependency-updates)
 
@@ -27,6 +28,7 @@ Consider, a Java application, comprise of several microservices and modules, and
 
 The very first thing we invested time on was building a common pipeline for all our Java code, be it a shared library or a Spring Boot application.
 But being used for repos which are only supposed to go to an artifact store(Nexus) and also for the repos which needs to be deployed on K8s, came with challenges. It needed to be quite configurable and smart. And it took almost a year to get that piece of code matured. But the major advantage, IMO, it gave us is, streamlining branching and release strategy.
+
 Our common pipeline stages were these:
 
 
@@ -47,10 +49,31 @@ We choose the Parent POM way. There we defined versions as properties, defined d
 
 
 When we slowly stabilized our dev-build-release-deploy pipeline, we realized for dev environments, we wanted faster builds and deployment, as we work on feature branches, we wanted to deploy to run our integration tests, and as quickly as possible revert the deployment to a stable branch. But we also wanted to run some quality checks on the code we are creating. Unfortunately, the steps we choose to QA our code, are all very time-consuming and ideally only matter if we are ready to merge to a higher branch.
+
 So, we further configured the pipeline stages to be a bit different on a Merge request (pull request in Github). To make the normal builds faster for developers and assure/force quality standards only if someone is trying to publish/release their changes to higher environments.
 
 
 ![Alt text](images/merge_req.png "quality control stages")
+
+#### OWASP check - exclusion list
+
+Not all CVEs or vulnerabilities are always relevant for every application. Although you want periodically check for vulnerabilities but also want to exclude some of them.
+Normally you can pass such a list to the OWASP plugin. Here we choose to maintain a central list for the all the repos, and added it as a git-submodule to every repo.
+
+![Alt text](images/owasp.png "suppression.xml strategy")
+
+Example for suppression.xml: 
+````xml
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <suppress>
+        <notes>Only applicable for spEL injection on @Query and @Aggregation</notes>
+        <filePath regex="true">.*\bspring-boot-starter-data-mongodb-2.7.*.jar</filePath>
+        <cve>CVE-2022-22980</cve>
+    </suppress>
+</suppressions>
+````
+
 
 
 #### Branching strategy and automatic versioning
@@ -150,7 +173,7 @@ For the second problem on env-specific props, Spring Boot already has an answer,
 But, we kept our applications separated from this, the means no profile has been set during the deployment of the applications, they all contact the config-server at startup and read the properties config-server gives back. We made our config-server to deployed with the profile, so for env A it gets deployment with properties <application>-A.yml/properties and exposes properties related to that profile. This way we centralized the properties and managed the env-related stuff.
 
 
-> TODO: picture of profile based config-server
+![Alt text](images/config-server-spring profile.png "how Spring Profile used in config server")
 
 
 ### APIs - generation & sharing/consumption
@@ -159,9 +182,9 @@ But, we kept our applications separated from this, the means no profile has been
 An application nowadays always has one or more REST endpoints, it is one of the best ways to expose information to the outside world or share within the boundary of the application.
 We used OpenAPI standards, created API definitions in YAML, and generated code out of it, for server-side as well as clients. This minimized our code a lot and less code mean less maintenance.
 
+More info on [OpenAPI](https://swagger.io/specification/)
 
-> TODO: open api to server side and client interaction diagram
-
+More info [OpenAPI Generator](https://openapi-generator.tech)
 
 Snippet of maven plugin to generate server-side code
 
@@ -281,10 +304,10 @@ public class UserApiBean {
 Soon we ran into an issue of “how to effectively share the API definitions”. The option we considered was, creating the definition in a separate repository, and sharing it with server as well as clients using “git submodules”. If you are not familiar with submodules, this is a very effective way to share static files between git repositories.
 
 
->  TODO: git submodule pic
-
+![Alt text](images/submodule-openapi.png "OpenAPI def as submodule for client and server side")
 
 But we choose a different path. We decided to keep the API definitions in the repository where we coded the server. So, any change in the definition is followed by an update in the server-side code and a release to Nexus as a part of our build-release pipeline.
+
 On the client side or where we are consuming the API, we added the release version as a dependency in our pom.xml. Before generating the client-side code, we ran an extra step to “unpack” the dependency. This became quite handy since it enforces the client to use a release version they want and is useful to the other team members reviewing the changes before it gets pushed to higher branches.
 
 Code snippet of unpack
@@ -342,7 +365,7 @@ We designed a separate pipeline for this, where we make use of a Spring profile-
 Special Thanks here for the contribution to [Robert Swier](https://www.linkedin.com/in/robert-swier-a09851b/)
 
 
-### Additional Useful Content
+### Additional Content
 
 
 >  TODO:

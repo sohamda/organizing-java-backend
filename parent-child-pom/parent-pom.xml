@@ -88,7 +88,6 @@
                     <suppressionFiles>
                         <suppressionFile>owasp-suppression-file/owasp-suppress.xml</suppressionFile>
                     </suppressionFiles>
-                    <mavenSettingsProxyId>owasp-https-proxy</mavenSettingsProxyId>
                 </configuration>
             </plugin>
             <plugin>
