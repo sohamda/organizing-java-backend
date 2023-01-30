@@ -113,13 +113,13 @@ We divided the problem in hand into pieces and separated functional, technical, 
 We choose to move most of the functional specs to internal APIs on top of MongoDB and Postgres, keeping the option open for functional administrators to manage these via CRUD options. I must say, we were lucky on this aspect since these properties didn’t contribute to bean creation and fortunately, we didn’t need to restart the application(s) for these.
 
 
-![Alt text](images/config prop as service.png "read configuration from an API")
+![Alt text](images/config_prop_as_service.png "read configuration from an API")
 
 
 Spring Cloud Config Server is what we choose for our technical properties, such as API endpoint, Message broker-related props, Database endpoints, Spring Boot-specific props etc. The services/modules will read these props at the time of startup and most of them will be used to instantiate different beans.
 
 
-![Alt text](images/config prop as springcloud.png "read configuration from an Spring Cloud Config Server")
+![Alt text](images/config_prop_as_springcloud.png "read configuration from an Spring Cloud Config Server")
 
 
 Soon, we ran into 2 sorts of problems, the number one being any change needs a restart of the related application(s) and secondly, some of them are environment specific. To solve the first problem, we investigated our Kubernetes construction, we have separate clusters for each domain, and cross-cluster communication is mostly via message broker/event-driven. So we created a config-server for each cluster and added an extra stage in our pipeline to restart the deployments in that cluster once a deployment happens to our config-server.
@@ -131,7 +131,7 @@ Soon, we ran into 2 sorts of problems, the number one being any change needs a r
 For the second problem on env-specific props, Spring Boot already has an answer, profile-based deployment. But we implemented the concept in a different way. Normally, you can specify the profile as a property during deployment/startup and the application picks the specific .yml or .properties file accordingly.
 
 
-![Alt text](images/spring profile.png "how Spring Profile works")
+![Alt text](images/spring_profile.png "how Spring Profile works")
 
 
 But, we kept our applications separated from this, the means no profile has been set during the deployment of the applications, they all contact the config-server at startup and read the properties config-server gives back. We made our config-server to deployed with the profile, so for env A it gets deployment with properties <application>-A.yml/properties and exposes properties related to that profile. This way we centralized the properties and managed the env-related stuff.
