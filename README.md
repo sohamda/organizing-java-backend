@@ -1,5 +1,17 @@
 # Organizing your Java/Spring Boot backend
 
+### Contents
+1. [Background](#background)
+2. [Pipeline](#pipeline)
+    1. [Parent POM](#parent-pom)
+    2. [Quality-Control on Merge](#quality-control-on-merge)
+    3. [Branching strategy and automatic versioning](#branching-strategy-and-automatic-versioning)
+3. [Configuration Management](#configuration-management)
+4. [APIs - generation & sharing/consumption](#apis---generation--sharingconsumption)
+5. [Automated System Integration Tests and Reports](#automated-system-integration-tests-and-reports)
+6. [Additional Useful Content](#additional-useful-content)
+    1. [Kafka Schema Definition](#kafka-schema-definition)
+    2. [Renovate Bot to Automate Dependency Updates](#renovate-bot-to-automate-dependency-updates)
 
 ### Background
 
@@ -141,7 +153,7 @@ But, we kept our applications separated from this, the means no profile has been
 > TODO: picture of profile based config-server
 
 
-### APIs
+### APIs - generation & sharing/consumption
 
 
 An application nowadays always has one or more REST endpoints, it is one of the best ways to expose information to the outside world or share within the boundary of the application.
