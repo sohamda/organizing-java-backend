@@ -1,7 +1,7 @@
-#Organizing your Java/Spring Boot backend
+# Organizing your Java/Spring Boot backend
 
 
-###Background
+### Background
 
 
 Consider, a Java application, comprise of several microservices and modules, and in the heart of the application, there is a Message Broker. This article talks about how you can organize this backend code and be tied together with a common pipeline, with clean release and branching strategies.
@@ -10,7 +10,7 @@ Consider, a Java application, comprise of several microservices and modules, and
 >put an architecture diagram here
 
 
-###Pipeline
+### Pipeline
 
 
 The very first thing we invested time on was building a common pipeline for all our Java code, be it a shared library or a Spring Boot application.
@@ -21,7 +21,7 @@ Our common pipeline stages were these:
 ![Alt text](images/common_pipeline.png "pipeline stages")
 
 
-####Parent POM
+#### Parent POM
 
 
 To achieve the above construction, we needed to have quite a lot of things common in our POM, for example, the version of Java, the version of Spring Boot, and the plugins we used to execute some of the stages in our pipeline. Here, actually, you have 2 choices, make maven templates to generate the skeleton of every project, then your POM always has the required things needed by default, and create a Parent POM, from where every Java and Spring Boot project builds their own POM and if required overwrite plugins and other properties.
@@ -31,7 +31,7 @@ We choose the Parent POM way. There we defined versions as properties, defined d
 ![Alt text](images/parent_pom.png "Parent-Child POMs")
 
 
-####Quality-Control on Merge
+#### Quality-Control on Merge
 
 
 When we slowly stabilized our dev-build-release-deploy pipeline, we realized for dev environments, we wanted faster builds and deployment, as we work on feature branches, we wanted to deploy to run our integration tests, and as quickly as possible revert the deployment to a stable branch. But we also wanted to run some quality checks on the code we are creating. Unfortunately, the steps we choose to QA our code, are all very time-consuming and ideally only matter if we are ready to merge to a higher branch.
@@ -41,7 +41,7 @@ So, we further configured the pipeline stages to be a bit different on a Merge r
 ![Alt text](images/merge_req.png "quality control stages")
 
 
-####Branching strategy and automatic versioning
+#### Branching strategy and automatic versioning
 
 
 That’s not all, we baked the versioning of the artifacts also into the pipeline. Before I explain that, let me give you an overview of our branching strategy a bit.
@@ -100,7 +100,7 @@ This was something we struggled with, the commands to do this seamlessly. But th
 Special thanks here for contribution, to [Kevin Pors](https://www.linkedin.com/in/kevin-pors-8398673/)
 
 
-###Configuration Management
+### Configuration Management
 
 
 One of the other things we struggled with initially was managing configuration, both functional and technical. Some of these were also environment specific. Working with Spring Boot brings its own challenges as well since by default the beans are singleton and if they are initialized based on configuration properties, any change needs a restart of the application.
@@ -140,7 +140,7 @@ But, we kept our applications separated from this, the means no profile has been
 >picture of profile based config-server
 
 
-###APIs
+### APIs
 
 
 An application nowadays always has one or more REST endpoints, it is one of the best ways to expose information to the outside world or share within the boundary of the application.
@@ -310,7 +310,7 @@ Code snippet of unpack
 Special thanks here for the contribution, to [Tijn van den Bergh](https://www.linkedin.com/in/tijn-van-den-bergh-7414b8140/) 
 
 
-###Automated System Integration Tests and Reports
+### Automated System Integration Tests and Reports
 
 
 Automated tests are an integral part of validating that the code we are releasing is not breaking any other downstream modules. But setting this up properly is always quite challenging. We used Gherkin to write the tests and Cucumber with Spring to run and generate reports. To complete the cycle, we also posted the results into our internal Confluence to keep our stakeholders informed about the details of each test and their results (passed or failed).
@@ -329,13 +329,13 @@ We designed a separate pipeline for this, where we make use of a Spring profile-
 Special Thanks here for the contribution to [Robert Swier](https://www.linkedin.com/in/robert-swier-a09851b/)
 
 
-###Additional Useful Content
+### Additional Useful Content
 
 
 
-####Kafka Schema Definition
+#### Kafka Schema Definition
 
 
-####Renovate Bot to Automate Dependency Updates
+#### Renovate Bot to Automate Dependency Updates
  
 
