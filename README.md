@@ -173,7 +173,7 @@ For the second problem on env-specific props, Spring Boot already has an answer,
 But, we kept our applications separated from this, the means no profile has been set during the deployment of the applications, they all contact the config-server at startup and read the properties config-server gives back. We made our config-server to deployed with the profile, so for env A it gets deployment with properties <application>-A.yml/properties and exposes properties related to that profile. This way we centralized the properties and managed the env-related stuff.
 
 
-![Alt text](images/config-server-spring profile.png "how Spring Profile used in config server")
+![Alt text](images/config-server-spring-profile.png "how Spring Profile used in config server")
 
 
 ### APIs - generation & sharing/consumption
