@@ -2,15 +2,17 @@
 
 ### Contents
 1. [Background](#background)
-2. [Pipeline](#pipeline)
+2. Maven
     1. [Parent POM](#parent-pom)
-    2. [Quality-Control on Merge](#quality-control-on-merge)
-    3. [OWASP check - exclusion list](#owasp-check---exclusion-list)
-    4. [Branching strategy and automatic versioning](#branching-strategy-and-automatic-versioning)
-3. [Configuration Management](#configuration-management)
-4. [APIs - generation & sharing/consumption](#apis---generation--sharingconsumption)
-5. [Automated System Integration Tests and Reports](#automated-system-integration-tests-and-reports)
-6. [Additional Content](#additional-content)
+    2. Maven enforcer
+3. [Pipeline](#pipeline)
+    1. [Quality-Control on Merge](#quality-control-on-merge)
+    2. [OWASP check - exclusion list](#owasp-check---exclusion-list)
+    3. [Branching strategy and automatic versioning](#branching-strategy-and-automatic-versioning)
+4. [Configuration Management](#configuration-management)
+5. [APIs - generation & sharing/consumption](#apis---generation--sharingconsumption)
+6. [Automated System Integration Tests and Reports](#automated-system-integration-tests-and-reports)
+7. [Additional Content](#additional-content)
     1. [Kafka Schema Definition](#kafka-schema-definition)
     2. [Renovate Bot to Automate Dependency Updates](#renovate-bot-to-automate-dependency-updates)
 
